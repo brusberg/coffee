@@ -1,0 +1,13 @@
+[package]
+name = "coffee"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gettext-rs = "0.7.0"
+ncursesw = "0.6.4"
+rand = "0.8.5"
+
+[[bin]]
+name = "coffee"
+path = "main.rs"
