@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-gettext-rs = "0.7.0"
-ncursesw = "0.6.4"
+clap = { version = "4.5", features = ["derive"] }
+ncurses = "6.0.0"
 rand = "0.8.5"
 
 [[bin]]
