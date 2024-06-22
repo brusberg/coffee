@@ -32,18 +32,18 @@ impl Cell {
         Cell { value, x, y }
     }
 
-    fn update(&mut self) {
-        match self.value {
-            CellValue::Steam(steam) => {
-                if steam > 0 {
-                    self.value = CellValue::Steam(steam - 1);
-                } else {
-                    self.value = CellValue::Empty;
-                }
-            },
-            _ => {}
-        }
-    }
+    // fn update(&mut self) {
+    //     match self.value {
+    //         CellValue::Steam(steam) => {
+    //             if steam > 0 {
+    //                 self.value = CellValue::Steam(steam - 1);
+    //             } else {
+    //                 self.value = CellValue::Empty;
+    //             }
+    //         },
+    //         _ => {}
+    //     }
+    // }
 
     fn update_value(&mut self, new_value: CellValue) {
         self.value = new_value;
@@ -51,6 +51,7 @@ impl Cell {
 }
 
 fn draw(grid: &Vec<Cell>, nrows: usize, ncols: usize) {
+    /// Render of grid blocks, a point of refactoring if getting slow. 
     for i in 0..nrows {
         for j in 0..ncols {
             let output = format!(
@@ -78,6 +79,7 @@ fn update(grid: &mut Vec<Cell>, nrows: usize, ncols: usize) {
         for j in 1..ncols-1 {
             let val: CellValue = grid[i * ncols + j].value;
             match val {
+                // Update rules for steam
                 CellValue::Steam(_) => {
                     let p: f64 = rng.gen(); 
                     let newval: CellValue = match val {
@@ -149,12 +151,6 @@ fn main() {
     const NCOLS: usize = 99;
     let mut grid: Vec<Cell> = Vec::new();
 
-    // for i in 0..NROWS {
-    //     for j in 0..NCOLS {
-    //         // /2 to account for space between characters
-    //         grid.push(Cell::new(CellValue::Empty, j as i32, i as i32));
-    //     }
-    // }
     for i in 0..NROWS {
         for j in 0..NCOLS {
             grid.push(Cell::new(CellValue::Empty, j as i32, i as i32));
@@ -168,9 +164,6 @@ fn main() {
             grid[y*NCOLS+x].value = CellValue::Scene(c);
         }
     }
-    // let nrows: usize = window.get_rows() as usize - 1; // -1 to account for status bar at bottom
-    // let ncols: usize = window.get_cols() as usize;
-    
     for i in 0..8{
         grid[17*NCOLS+i+29].value = CellValue::Steam(4);
     }
@@ -191,7 +184,6 @@ fn main() {
         
         refresh();
         
-        // TODO: Remove this call to getch. It's just for hanging between frames.
         getch();
         let c = getch();
         match c as u8 as char {
