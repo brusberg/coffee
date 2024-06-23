@@ -137,7 +137,7 @@ impl Window {
 }
 
 
-pub fn draw(window: &mut Window, char_grid: &Vec<char>,  nrows: usize, ncols: usize) -> Result<()> {
+pub fn draw(window: &mut Window, char_grid: &[Vec<char>]) -> Result<()> {
     //! Draws the grid on the screen
     //!
     //! # Arguments
@@ -145,11 +145,11 @@ pub fn draw(window: &mut Window, char_grid: &Vec<char>,  nrows: usize, ncols: us
     //! * `nrows` - Number of rows in the grid
     //! * `ncols` - Number of columns in the grid
     //! * `input_handler` - Input handler to get the character to draw for alive cells
-    for i in 0..nrows {
-        for j in 0..ncols {
+    for (i, row) in char_grid.iter().enumerate() {
+        for (j, c) in row.iter().enumerate() {
             let output = format!(
                 "{}",
-                char_grid[i * ncols + j]
+                c
             );
             //window.print(j as i32 * 2, i as i32, &output, None)?;
             window.print(j as i32,i as i32, &output, None)?;

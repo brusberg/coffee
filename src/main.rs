@@ -144,14 +144,13 @@ fn main() {
 
     let grid_width: usize = 100;
     let grid_height: usize = 100;
-    let mut grid: Vec<Cell> = Vec::new();
+    let mut grid: Vec<Vec<Cell>> = Vec::new();
     let grid_loc_x = 0 as usize; //TODO add bounds no less than 0
     let grid_loc_y = 0 as usize; //TODO add bounds no less than 0, no more than 
-    let mut char_grid: Vec<char> = vec![' '; nrows * ncols];
 
     for i in 0..nrows {
         for j in 0..ncols {
-            grid.push(Cell::new(CellValue::Empty, j as i32, i as i32));
+            grid.push(vec![Cell::new(CellValue::Empty, j as i32, i as i32); ncols]);
         }
     }
 
@@ -159,57 +158,33 @@ fn main() {
     let contents = fs::read_to_string("coffee.txt").expect("Something went wrong reading the file");
     for (i, line) in contents.lines().enumerate() {
         for (j, c) in line.chars().enumerate() {
-            let x = j; // +1 to account for the border
-            let y = i; // +1 to account for the border
-            match (y as i32) % 2 {
-                0 => grid[y*ncols+x].value = CellValue::Scene('E'),
-                1 => grid[y*ncols+x].value = CellValue::Scene('O'),
-                _ => grid[y*ncols+x].value = CellValue::Scene('?'),
-            };
-            grid[y*ncols+x].value = CellValue::Scene(c);
-            // grid[y*ncols+x].value = CellValue::Scene('.');
+            grid[i][j].value = CellValue::Scene(c);
         }
     }
-    // for i in 0..8{
-    //     grid[18*ncols+i+29].value = CellValue::Steam(4);
-    // }
-    // for i in 0..24{
-    //     grid[17*ncols+i+37].value = CellValue::Steam(4);
-    // }
-    // for i in 0..8{
-    //     grid[18*ncols+i+61].value = CellValue::Steam(4);
-    // }
+
     /* End Coffee */
 
     loop {
 
         win.erase();
 
-        // 1. Calc char_grid
-        for i in 0..nrows {
-            for j in 0..ncols {
-                //TODO Bound for moement
-                let cell = &grid[(i + grid_loc_y) * nrows + (j + grid_loc_x)];
-                // char_grid[i * ncols + j] = match (j as i32)%2 {
-                //     0 => ' ',
-                //     1 => '█',
-                //     _ => 'X',
-                // };
-                char_grid[i * ncols + j] = match cell.value {
-                    cellular::CellValue::Empty => 'X',
-                    cellular::CellValue::Steam(4) => '█',
-                    cellular::CellValue::Steam(3) => '▓',
-                    cellular::CellValue::Steam(2) => '▒',
-                    cellular::CellValue::Steam(1) => '░',
-                    cellular::CellValue::Scene(c) => c,
+        let char_grid: Vec<Vec<char>> = grid.iter().map(|row| {
+            row.iter().map(|cell| {
+                match cell.value {
+                    CellValue::Empty => ' ',
+                    CellValue::Steam(4) => '█',
+                    CellValue::Steam(3) => '▓',
+                    CellValue::Steam(2) => '▒',
+                    CellValue::Steam(1) => '░',
+                    CellValue::Scene(c) => c,
                     _ => ' ',
-                };
-            }
-        }
+                }
+            }).collect()
+        }).collect();
 
         // TODO: Better hadle inputs
         // 2. Draw
-        draw(&mut win, &char_grid,  nrows, ncols);
+        draw(&mut win, &char_grid);
 
         // 3. Update
         // grid = update(&grid, nrows, ncols);
