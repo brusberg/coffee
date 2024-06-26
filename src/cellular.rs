@@ -37,13 +37,13 @@ impl Cell {
     }
 }
 
-pub fn update(grid: &Vec<Cell>, nrows: usize, ncols: usize) -> Vec<Cell> {
+pub fn update(grid: &[Vec<Cell>], nrows: usize, ncols: usize) -> Vec<Vec<Cell>> {
     let mut rng = rand::thread_rng();
 
-    let mut new_grid = grid.clone();
+    let mut new_grid: Vec<Vec<Cell>> = grid.to_vec().clone();
     for i in 1..nrows-1 {
         for j in 1..ncols-1 {
-            let val: CellValue = grid[i * ncols + j].value;
+            let val: CellValue = grid[i][j].value;
             match val {
                 // Update rules for steam
                 CellValue::Steam(_) => {
@@ -79,7 +79,7 @@ pub fn update(grid: &Vec<Cell>, nrows: usize, ncols: usize) -> Vec<Cell> {
                             },
                             _ => val,
                         };
-                    new_grid[(i - 1) * ncols + j].update_value(newval);
+                    new_grid[(i - 1)][j].update_value(newval);
                 }   
                 _ => {continue}
             }
